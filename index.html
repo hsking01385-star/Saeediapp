@@ -15,57 +15,78 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- هدر -->
     <header class="p-4 flex justify-between items-center border-b border-zinc-800">
         <h1 class="text-lg font-black gold-text">فاتحه آنلاین</h1>
-        <button onclick="toggleMenu()" class="text-2xl gold-text">☰</button>
+        <button onclick="adminLogin()" class="text-[10px] bg-zinc-800 px-3 py-1 rounded-lg">ورود ادمین</button>
     </header>
 
-    <!-- منوی همبرگری -->
-    <div id="menu" class="hidden absolute top-16 right-4 w-48 bg-zinc-900 border border-zinc-700 rounded-xl p-4 z-50">
-        <ul class="space-y-4 text-xs">
-            <li>صفحه اصلی</li>
-            <li>مدیریت مراسم</li>
-            <li>تماس با پشتیبانی</li>
-        </ul>
-    </div>
-
-    <!-- محتوای اصلی -->
-    <div class="flex-1 p-6 space-y-6">
-        <!-- کارت ثبت سرباره -->
-        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800">
-            <h2 class="gold-text font-bold text-sm mb-4">ثبت کمک مالی (سرباره)</h2>
-            <input type="text" id="donor-name" placeholder="نام و نام خانوادگی خیر" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs mb-3">
-            <input type="text" id="donor-ref" placeholder="کد پیگیری واریزی" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs mb-3">
-            <button onclick="registerDonation()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 rounded-xl text-xs">ثبت در لیست خیرین</button>
+    <div id="main-view" class="flex-1 p-6 space-y-4">
+        <h2 class="text-sm text-zinc-400 mb-4">ثبت مراسم توسط صاحب عزا:</h2>
+        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-700 space-y-3">
+            <input type="text" id="user-name" placeholder="نام مرحوم" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs">
+            <input type="text" id="user-card" placeholder="شماره کارت برای دریافت سرباره" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs">
+            <button onclick="registerMurasim()" class="w-full bg-gold text-black font-bold py-3 rounded-xl text-xs">ثبت مراسم (۸۰ هزار تومان)</button>
         </div>
+        
+        <h2 class="text-sm text-zinc-400 mt-8">لیست مراسم‌های تایید شده:</h2>
+        <div id="murasim-list" class="space-y-3"></div>
     </div>
 
-    <!-- دکمه‌های پایین صفحه -->
-    <div class="p-6 bg-zinc-900 rounded-t-3xl border-t border-zinc-700 space-y-3">
-        <button onclick="alert('لطفاً مبلغ ۸۰,۰۰۰ تومان به کارت ۶۲۱۹۸۶۱۴۳۵۶۵۰۲۸۷ به نام حمیدرضا سعیدی واریز کنید.')" class="w-full bg-gold text-black font-bold py-3 rounded-xl text-xs">
-            <span>+ ثبت مراسم جدید (۸۰ هزار تومان)</span>
-        </button>
-        <button onclick="window.open('https://wa.me/989964677831', '_blank')" class="w-full bg-maroon text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2">
-            <span>📞 تایید واریزی توسط ادمین</span>
-        </button>
-        <p class="text-[10px] text-center text-zinc-500 pt-2">مدیریت: حمیدرضا سعیدی</p>
+    <!-- پنل ادمین مخفی -->
+    <div id="admin-panel" class="hidden flex-1 p-6 space-y-4">
+        <h2 class="gold-text font-bold">پنل مدیریت حمیدرضا سعیدی (تایید مراسم‌ها)</h2>
+        <div id="admin-murasim-list" class="space-y-3"></div>
+        <button onclick="location.reload()" class="w-full bg-zinc-800 py-3 rounded-xl text-xs">خروج</button>
     </div>
 
     <script>
-        function toggleMenu() {
-            document.getElementById('menu').classList.toggle('hidden');
-        }
+        let murasims = JSON.parse(localStorage.getItem('murasim_db')) || [];
 
-        function registerDonation() {
-            const name = document.getElementById('donor-name').value;
-            const ref = document.getElementById('donor-ref').value;
-            if(name && ref) {
-                alert("نام " + name + " با کد پیگیری " + ref + " با موفقیت ثبت شد.");
-            } else {
-                alert("لطفاً نام و کد پیگیری را وارد کنید.");
+        function registerMurasim() {
+            let name = document.getElementById('user-name').value;
+            let card = document.getElementById('user-card').value;
+            if(name && card) {
+                alert("لطفاً ۸۰ هزار تومان واریز کنید. پس از بررسی ادمین، مراسم شما فعال می‌شود.");
+                murasims.push({ id: Date.now(), name, card, status: 'pending' });
+                localStorage.setItem('murasim_db', JSON.stringify(murasims));
+                location.reload();
             }
         }
+
+        function renderList() {
+            // فقط نمایش مراسم‌های تایید شده برای عموم
+            document.getElementById('murasim-list').innerHTML = murasims.filter(m => m.status === 'active').map(m => `
+                <div class="bg-zinc-900 p-4 rounded-xl border border-emerald-900 text-center">
+                    <h3 class="font-bold text-gold-text">${m.name}</h3>
+                </div>
+            `).join('');
+        }
+
+        function adminLogin() {
+            let mobile = prompt("شماره:");
+            let pass = prompt("رمز:");
+            if (mobile === "09964677831" && pass === "1234a") {
+                document.getElementById('main-view').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                
+                document.getElementById('admin-murasim-list').innerHTML = murasims.map(m => `
+                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700 flex justify-between items-center">
+                        <div><h3 class="text-sm">${m.name}</h3></div>
+                        ${m.status === 'pending' ? `<button onclick="approve('${m.id}')" class="bg-emerald-600 px-3 py-1 rounded text-xs">تایید مراسم</button>` : '<span class="text-emerald-500 text-xs">فعال</span>'}
+                    </div>
+                `).join('');
+            }
+        }
+
+        function approve(id) {
+            let m = murasims.find(x => x.id == id);
+            m.status = 'active';
+            localStorage.setItem('murasim_db', JSON.stringify(murasims));
+            location.reload();
+        }
+
+        renderList();
     </script>
 </body>
 </html>
+
