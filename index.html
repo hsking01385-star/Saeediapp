@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6,65 +6,51 @@
     <title>فاتحه آنلاین بختیاری</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Vazirmatn', sans-serif; background: #0a0a0a; color: #e5e5e5; }
         .gold-text { color: #d4af37; }
         .bg-gold { background-color: #d4af37; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #71717a; }
     </style>
 </head>
-<body class="p-4">
+<body class="pb-24">
 
-    <!-- منوی ناوبری -->
-    <nav class="flex justify-between mb-6 text-[11px] text-zinc-500 border-b border-zinc-800 pb-4">
-        <button onclick="showPage('page-list')">لیست مراسم</button>
-        <button onclick="showPage('page-about')">درباره ما</button>
-        <button onclick="showPage('page-rules')">قوانین</button>
-    </nav>
+    <header class="p-4 border-b border-zinc-800 text-center">
+        <h1 class="text-lg font-black gold-text">سامانه فاتحه آنلاین</h1>
+    </header>
 
-    <!-- صفحه ۱: لیست مراسم‌ها -->
-    <div id="page-list" class="space-y-4">
-        <h1 class="text-lg font-bold gold-text">مراسم‌های در حال برگزاری</h1>
+    <div id="page-list" class="p-6">
+        <h2 class="text-sm text-zinc-400 mb-4">مراسم‌های در حال برگزاری</h2>
         <div id="murasim-list" class="space-y-3"></div>
-        <button onclick="showPage('page-register')" class="w-full bg-gold p-3 rounded-xl font-bold text-black mt-6">ثبت مراسم جدید (رایگان)</button>
     </div>
 
-    <!-- صفحه ۲: ثبت مراسم -->
-    <div id="page-register" class="hidden space-y-4">
-        <h2 class="text-lg">ثبت اطلاعات مرحوم</h2>
-        <input type="text" id="m-name" placeholder="نام و نام خانوادگی مرحوم" class="w-full bg-zinc-900 p-3 rounded-xl border border-zinc-700 text-sm">
-        <input type="text" id="m-card" placeholder="شماره کارت برای سرباره" class="w-full bg-zinc-900 p-3 rounded-xl border border-zinc-700 text-sm">
-        <button onclick="saveMurasim()" class="w-full bg-green-800 p-3 rounded-xl text-sm">تایید و ثبت نهایی</button>
+    <div id="page-auth" class="hidden p-6 space-y-4">
+        <h2 class="text-lg font-bold">ورود صاحب‌عزا</h2>
+        <input type="text" id="phone" placeholder="شماره موبایل" class="w-full bg-zinc-900 p-3 rounded-xl border border-zinc-700">
+        <input type="text" id="m-name" placeholder="نام مرحوم" class="w-full bg-zinc-900 p-3 rounded-xl border border-zinc-700">
+        <input type="text" id="m-card" placeholder="شماره کارت" class="w-full bg-zinc-900 p-3 rounded-xl border border-zinc-700">
+        <button onclick="saveMurasim()" class="w-full bg-gold text-black font-bold py-3 rounded-xl">ثبت و انتشار مراسم</button>
     </div>
 
-    <!-- صفحه ۳: درباره ما -->
-    <div id="page-about" class="hidden text-center space-y-4 p-4 border border-zinc-800 rounded-xl">
-        <h2 class="gold-text font-bold">درباره ما</h2>
-        <p class="text-xs text-zinc-400 leading-6">سامانه فاتحه آنلاین جهت تسهیل در ارسال فاتحه و سرباره برای بازماندگان طراحی شده است تا عزیزان بتوانند در غم یکدیگر شریک باشند.</p>
+    <div id="page-rules" class="hidden p-6 text-xs leading-6 text-zinc-400">
+        <h2 class="text-gold-text font-bold mb-2">قوانین و مقررات</h2>
+        <p>۱. تمامی اطلاعات توسط کاربران ثبت می‌شود.<br>۲. این سامانه مسئولیتی در قبال تراکنش‌های مالی ندارد.<br>۳. رعایت احترام متوفی الزامی است.</p>
     </div>
 
-    <!-- صفحه ۴: قوانین -->
-    <div id="page-rules" class="hidden space-y-4 p-4 border border-zinc-800 rounded-xl">
-        <h2 class="gold-text font-bold">قوانین سامانه</h2>
-        <p class="text-xs text-zinc-400 leading-6">۱. مسئولیت صحت شماره کارت و اطلاعات وارد شده بر عهده ثبت‌کننده مراسم است.<br>۲. این سامانه صرفاً یک پل ارتباطی است و هیچ دخالتی در تراکنش‌های مالی ندارد.</p>
-    </div>
-
-    <!-- صفحه اختصاصی پرداخت -->
-    <div id="page-payment" class="hidden space-y-4 text-center">
-        <h2 id="pay-name" class="text-xl font-bold gold-text"></h2>
-        <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
-            <p class="text-sm">شماره کارت جهت پرداخت سرباره:</p>
-            <p id="pay-card" class="text-lg font-mono my-4 text-white bg-black py-2 rounded-lg"></p>
-            <button onclick="showPage('page-list')" class="w-full bg-zinc-700 p-3 rounded-xl text-sm">بازگشت به لیست</button>
-        </div>
-    </div>
+    <nav class="fixed bottom-0 w-full bg-zinc-900 border-t border-zinc-800 p-3 flex justify-around">
+        <button onclick="showPage('page-list')" class="nav-btn"><i class="fa-solid fa-house"></i>خانه</button>
+        <button onclick="showPage('page-auth')" class="nav-btn"><i class="fa-solid fa-user-pen"></i>ثبت مراسم</button>
+        <button onclick="showPage('page-rules')" class="nav-btn"><i class="fa-solid fa-gavel"></i>قوانین</button>
+    </nav>
 
     <script>
         let murasims = JSON.parse(localStorage.getItem('db')) || [];
 
         function showPage(pageId) {
-            ['page-list', 'page-register', 'page-about', 'page-rules', 'page-payment'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
+            document.getElementById('page-list').classList.add('hidden');
+            document.getElementById('page-auth').classList.add('hidden');
+            document.getElementById('page-rules').classList.add('hidden');
             document.getElementById(pageId).classList.remove('hidden');
         }
 
@@ -76,22 +62,17 @@
                 localStorage.setItem('db', JSON.stringify(murasims));
                 alert("مراسم با موفقیت ثبت شد.");
                 location.reload();
-            } else { alert("لطفاً همه موارد را پر کنید."); }
+            }
         }
 
-        function openPayment(id) {
-            let m = murasims.find(x => x.id == id);
-            document.getElementById('pay-name').innerText = m.name;
-            document.getElementById('pay-card').innerText = m.card;
-            showPage('page-payment');
-        }
-
+        // نمایش لیست اولیه
         document.getElementById('murasim-list').innerHTML = murasims.map(m => `
-            <div onclick="openPayment(${m.id})" class="bg-zinc-900 p-4 rounded-xl border border-zinc-700 cursor-pointer hover:border-gold-text">
+            <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
                 <h3 class="font-bold">${m.name}</h3>
-                <p class="text-[10px] text-zinc-500">برای مشاهده کارت و پرداخت کلیک کنید</p>
+                <p class="text-[10px] text-zinc-500 font-mono">کارت: ${m.card}</p>
             </div>
         `).join('');
     </script>
 </body>
 </html>
+  
