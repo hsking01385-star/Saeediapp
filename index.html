@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتحه آنلاین</title>
+    <title>سامانه فاتحه آنلاین بختیاری</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" />
     <style>
@@ -14,56 +14,13 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- نمای اصلی (لیست مراسم‌ها) -->
-    <div id="home-view" class="p-6">
-        <h1 class="text-xl font-black gold-text mb-6">مراسم‌های تایید شده</h1>
-        <div id="murasim-list" class="space-y-4"></div>
-        <button onclick="adminLogin()" class="mt-10 text-[10px] text-zinc-600">پنل ادمین</button>
-    </div>
+    <header class="p-4 flex justify-between items-center border-b border-zinc-800">
+        <h1 class="text-lg font-black gold-text">فاتحه آنلاین</h1>
+    </header>
 
-    <!-- نمای اختصاصی هر مراسم -->
-    <div id="murasim-view" class="hidden p-6 space-y-6">
-        <button onclick="location.reload()" class="text-gold-text">← بازگشت</button>
-        <div class="bg-zinc-900 p-6 rounded-2xl border border-zinc-700 text-center">
-            <h2 id="view-name" class="text-2xl font-bold gold-text"></h2>
-            <p class="text-xs text-zinc-400 mt-2">جهت پرداخت سرباره به شماره کارت زیر واریز کنید</p>
-            <div class="bg-black p-4 rounded-xl mt-4 font-mono text-xl text-gold-text" id="view-card"></div>
-            
-            <div class="mt-6 space-y-3">
-                <input type="text" id="donor-name" placeholder="نام پرداخت کننده" class="w-full bg-zinc-800 p-3 rounded-xl text-xs">
-                <input type="text" id="donor-ref" placeholder="کد پیگیری واریزی" class="w-full bg-zinc-800 p-3 rounded-xl text-xs">
-                <button onclick="alert('سرباره شما ثبت شد. با تشکر.')" class="w-full bg-gold text-black font-bold py-3 rounded-xl">ثبت واریزی سرباره</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let murasims = JSON.parse(localStorage.getItem('murasim_db')) || [];
-
-        function renderHome() {
-            document.getElementById('murasim-list').innerHTML = murasims.filter(m => m.status === 'active').map(m => `
-                <div onclick="openMurasim('${m.id}')" class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 cursor-pointer hover:border-gold-text">
-                    <h3 class="font-bold text-lg">${m.name}</h3>
-                    <p class="text-[10px] text-zinc-500">جهت پرداخت سرباره کلیک کنید</p>
-                </div>
-            `).join('');
-        }
-
-        function openMurasim(id) {
-            let m = murasims.find(x => x.id == id);
-            document.getElementById('view-name').innerText = m.name;
-            document.getElementById('view-card').innerText = m.card;
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('murasim-view').classList.remove('hidden');
-        }
-
-        // [بخش ادمین و ثبت مراسم که قبلاً داشتیم...]
-        function adminLogin() {
-             let pass = prompt("رمز:");
-             if(pass === "1234a") { /* پنل باز شود */ alert("پنل ادمین فعال شد"); }
-        }
-
-        renderHome();
-    </script>
-</body>
-</html>
+    <div id="home-view" class="flex-1 p-6 space-y-6">
+        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-700 space-y-3">
+            <h2 class="text-xs gold-text font-bold">ثبت رایگان مراسم:</h2>
+            <input type="text" id="user-name" placeholder="نام و نام خانوادگی مرحوم" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs">
+            <input type="text" id="user-card" placeholder="شماره کارت جهت دریافت سرباره" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs">
+            <button onclick="registerMurasim()" class="w-full bg-gold text-black font-bold py-3 rounded-xl text-xs">ثبت و انتشار رایگان</button>
