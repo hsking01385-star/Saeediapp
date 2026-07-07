@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پلتفرم مدیریت یادبود مجازی</title>
+    <title>پلتفرم هوشمند یادبود مجازی</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,42 +14,37 @@
 </head>
 <body class="max-w-md mx-auto min-h-screen flex flex-col justify-between selection:bg-amber-500/20">
 
-    <!-- هدر ثابت پلتفرم -->
     <div class="bg-zinc-900/90 sticky top-0 z-50 backdrop-blur border-b border-zinc-800 px-4 py-4 flex justify-between items-center">
-        <button onclick="accessAdminPanel()" id="admin-btn" class="bg-zinc-800 text-amber-400 text-[11px] font-bold px-3 py-1.5 rounded-lg border border-zinc-700/50 flex items-center gap-1">
-            <i class="fa-solid fa-user-gear"></i>
-            <span>مدیریت کل</span>
+        <button onclick="openLoginModal()" id="admin-btn" class="bg-zinc-800 text-amber-400 text-[11px] font-bold px-3 py-1.5 rounded-lg border border-zinc-700/50 flex items-center gap-1">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span id="btn-panel-text">ورود به پنل</span>
         </button>
         <div class="text-left">
             <select id="murasim-selector" onchange="switchMurasim(this.value)" class="bg-zinc-950 border border-zinc-800 text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none">
-                <!-- لیست مراسم‌ها اینجا لود می‌شود -->
             </select>
         </div>
     </div>
 
-    <!-- بخش اخطار قطع اشتراک (کارت صاحب پلتفرم یعنی حمید) -->
     <div id="subscription-lock" class="flex-1 p-6 flex flex-col justify-center items-center text-center space-y-4 hidden">
         <div class="w-16 h-16 bg-red-500/10 border border-red-500/30 text-red-500 rounded-full flex items-center justify-center text-2xl animate-bounce">
             <i class="fa-solid fa-hourglass-end"></i>
         </div>
         <h2 class="text-sm font-black text-zinc-200">پلن اشتراک این صفحه به پایان رسیده است</h2>
         <p class="text-xs text-zinc-400 max-w-xs leading-relaxed">
-            خانواده محترم مرحوم، جهت تایید و فعال‌سازی مجدد صفحه یادبود، لطفاً حق اشتراک پلتفرم را به شماره کارت زیر واریز کرده و رسید را به پشتیبانی ارسال فرمایید.
+            خانواده محترم متوفی، جهت تایید و فعال‌سازی مجدد صفحه یادبود، لطفاً حق اشتراک پلتفرم را به شماره کارت زیر واریز کرده و رسید را به پشتیبانی ارسال فرمایید.
         </p>
         <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl w-full space-y-2">
-            <span class="text-[10px] text-zinc-500 block">شماره کارت مدیریت پلتفرم (حمید)</span>
+            <span class="text-[10px] text-zinc-500 block">شماره کارت مدیریت پلتفرم</span>
             <span class="font-mono text-amber-400 font-bold tracking-wider text-sm">۶۲۷۳-۵۳۳۱-۱۱۲۲-۳۳۴۴</span>
         </div>
     </div>
 
-    <!-- نمای اصلی کاربران (مهمان) -->
     <main id="guest-view" class="flex-1 p-4 space-y-4 overflow-y-auto">
         <div class="bg-zinc-900/60 border border-zinc-800/80 p-3 rounded-xl text-center flex items-center justify-center gap-2 text-xs text-zinc-400">
             <i class="fa-regular fa-clock text-amber-500 animate-pulse"></i>
             <span id="murasim-time">در حال بارگذاری...</span>
         </div>
 
-        <!-- کارت فاتحه -->
         <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl text-center shadow-xl">
             <h3 class="text-zinc-400 text-xs font-bold mb-1">هدیه معنوی به روح مرحوم</h3>
             <div id="fatiha-count" class="text-4xl font-black text-amber-400 tracking-wide my-2">۰</div>
@@ -59,7 +54,6 @@
             </button>
         </div>
 
-        <!-- کارت همیاری مالی خانواده -->
         <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl shadow-xl space-y-4">
             <h3 class="text-zinc-200 font-bold text-xs flex items-center gap-2 border-b border-zinc-800/60 pb-2">
                 <i class="fa-solid fa-credit-card text-amber-500"></i>
@@ -72,53 +66,77 @@
         </div>
     </main>
 
-    <!-- پنل مدیریت کل (مخصوص شما) -->
-    <main id="admin-view" class="flex-1 p-4 space-y-4 overflow-y-auto hidden">
+    <main id="super-admin-view" class="flex-1 p-4 space-y-4 overflow-y-auto hidden">
         <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl space-y-4">
             <h2 class="text-amber-400 font-black text-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i>
-                ساخت و تعریف مراسم ختم جدید
+                افتتاح صفحه یادبود و اکانت جدید
             </h2>
-            
             <div class="space-y-3">
-                <input type="text" id="new-name" placeholder="نام متوفی (مثلا: شادروان احمدی)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                <input type="text" id="new-time" placeholder="زمان مراسم (مثلا: فردا ساعت ۱۶)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                <input type="text" id="new-card" placeholder="شماره کارت بانکی خانواده" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                
+                <input type="text" id="adm-name" placeholder="نام متوفی (مثلا: شادروان علی احمدی)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="adm-user" placeholder="نام کاربری خانواده" class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
+                    <input type="text" id="adm-pass" placeholder="رمز عبور خانواده" class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
+                </div>
+                <input type="text" id="adm-card" placeholder="شماره کارت خانواده (اختیاری - خودشان هم میتوانند بزنند)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
                 <div class="flex items-center justify-between bg-zinc-950 p-3 rounded-xl border border-zinc-800">
-                    <span class="text-xs text-zinc-400">وضعیت حق اشتراک (پرداخت دستی)</span>
-                    <select id="new-status" class="bg-zinc-900 border border-zinc-700 text-xs text-zinc-200 rounded px-2 py-1">
-                        <option value="active">فعال (پول پرداخت شده)</option>
-                        <option value="expired">غیرفعال (منقضی شده)</option>
+                    <span class="text-xs text-zinc-400">وضعیت حق اشتراک</span>
+                    <select id="adm-status" class="bg-zinc-900 border border-zinc-700 text-xs text-zinc-200 rounded px-2 py-1">
+                        <option value="active">فعال (اشتراک دارد)</option>
+                        <option value="expired">غیرفعال (بدون اشتراک)</option>
                     </select>
                 </div>
-
-                <button onclick="createNewMurasim()" class="w-full bg-emerald-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs">ثبت مراسم و تولید صفحه جدید</button>
+                <button onclick="superCreateMurasim()" class="w-full bg-amber-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs">ایجاد صفحه و اکانت</button>
             </div>
         </div>
-
-        <!-- لیست و مدیریت مراسم‌های موجود -->
         <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl">
-            <h3 class="text-zinc-300 font-bold text-xs mb-3">لیست صفحات و وضعیت اشتراک‌ها</h3>
-            <div id="admin-list-container" class="space-y-2"></div>
+            <h3 class="text-zinc-300 font-bold text-xs mb-3">مدیریت کل صفحات و تمدید اشتراک‌ها</h3>
+            <div id="super-list-container" class="space-y-2"></div>
+        </div>
+    </main>
+
+    <main id="client-admin-view" class="flex-1 p-4 space-y-4 overflow-y-auto hidden">
+        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl space-y-4">
+            <div class="border-b border-zinc-800 pb-2">
+                <h2 class="text-amber-400 font-black text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    پنل مدیریت اختصاصی خانواده <span id="client-panel-title" class="text-zinc-200"></span>
+                </h2>
+                <p class="text-[10px] text-zinc-500 mt-1">مشخصات مجلس خود را در این بخش تعیین و بروزرسانی کنید.</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[10px] text-zinc-400 block mb-1">نام و عنوان صفحه:</label>
+                    <input type="text" id="client-name" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-zinc-400 block mb-1">زمان و جزئیات مجلس ختم (توسط شما تعیین می‌شود):</label>
+                    <input type="text" id="client-time" placeholder="مثال: فردا ساعت ۱۶ الی ۱۸ در مسجد جامع" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] text-zinc-400 block mb-1">شماره کارت بانکی جهت همیاری و امور خیریه:</label>
+                    <input type="text" id="client-card" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
+                </div>
+                <button onclick="clientSaveData()" class="w-full bg-emerald-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs">ذخیره و بروزرسانی تغییرات صفحه</button>
+            </div>
         </div>
     </main>
 
     <script>
-        // دیتابیس هوشمند پلتفرم با قابلیت ذخیره خودکار
-        let platformDB = JSON.parse(localStorage.getItem('platform_murasim_db')) || {
+        let platformDB = JSON.parse(localStorage.getItem('multi_user_murasim_db')) || {
             currentId: 1,
             murasims: [
-                { id: 1, name: "شادروان علی احمدی", time: "۲ ساعت و ۴۵ دقیقه تا شروع مراسم", card: "۶۰۳۷۹۹۷۹۱۲۳۴۵۶۷۸", status: "active", fatiha: 142 },
-                { id: 2, name: "مرحومه سیده زهرا حسینی", time: "مراسم پایان یافته است", card: "۵۸۹۲۱۰۱۲۳۴۵۶۷۸۹۰", status: "expired", fatiha: 89 }
+                { id: 1, name: "شادروان علی احمدی", username: "ali", password: "123", time: "فردا ساعت ۱۶ الی ۱۸ در مسجد جامع", card: "۶۰۳۷۹۹۷۹۱۲۳۴۵۶۷۸", status: "active", fatiha: 142 },
+                { id: 2, name: "مرحومه سیده زهرا حسینی", username: "zahra", password: "456", time: "مراسم پایان یافته است", card: "۵۸۹۲۱۰۱۲۳۴۵۶۷۸۹۰", status: "expired", fatiha: 89 }
             ]
         };
 
-        const ADMIN_PASSWORD = "1234"; // رمز عبور اختصاصی شما (قابل تغییر)
-        let isSystemAdmin = false;
+        const SUPER_PASSWORD = "1234"; 
+        let loggedInRole = 'guest'; // guest, super, client
+        let loggedInClientId = null;
 
         function savePlatformData() {
-            localStorage.setItem('platform_murasim_db', JSON.stringify(platformDB));
+            localStorage.setItem('multi_user_murasim_db', JSON.stringify(platformDB));
             initPlatform();
         }
 
@@ -127,46 +145,139 @@
             const currentMurasimId = platformDB.currentId;
             const current = platformDB.murasims.find(m => m.id == currentMurasimId);
 
-            // لود لیست کشویی هدر
             selector.innerHTML = platformDB.murasims.map(m => `<option value="${m.id}" ${m.id == currentMurasimId ? 'selected' : ''}>${m.name}</option>`).join('');
 
-            // بررسی وضعیت قفل اشتراک
-            if (current.status === 'expired' && !isSystemAdmin) {
+            // مدیریت ویوها بر اساس رول لاگین شده
+            if (loggedInRole === 'super') {
                 document.getElementById('guest-view').classList.add('hidden');
-                document.getElementById('subscription-lock').classList.remove('hidden');
-                document.getElementById('app-title') ? document.getElementById('app-title').innerText = "صفحه غیرفعال است" : null;
-                return;
-            } else {
                 document.getElementById('subscription-lock').classList.add('hidden');
-                if(!isSystemAdmin) document.getElementById('guest-view').classList.remove('hidden');
-            }
+                document.getElementById('client-admin-view').classList.add('hidden');
+                document.getElementById('super-admin-view').classList.remove('hidden');
+                document.getElementById('btn-panel-text').innerText = "خروج از پنل";
 
-            // رندر داده‌های صفحه مهمان
-            document.getElementById('fatiha-count').innerText = current.fatiha.toLocaleString('fa-IR');
-            document.getElementById('murasim-time').innerText = current.time;
-            document.getElementById('family-card').innerText = current.card.replace(/(\d{4})(?=\d)/g, '$1-');
-
-            // رندر لیست مدیریت در پنل ادمین
-            if (isSystemAdmin) {
-                document.getElementById('admin-list-container').innerHTML = platformDB.murasims.map(m => `
+                document.getElementById('super-list-container').innerHTML = platformDB.murasims.map(m => `
                     <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
                         <div>
                             <p class="font-bold text-zinc-200">${m.name}</p>
-                            <p class="text-[10px] text-zinc-500">فاتحه: ${m.fatiha}</p>
+                            <p class="text-[10px] text-zinc-500">یوزر: ${m.username} | رمز: ${m.password}</p>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="toggleSubscription(${m.id})" class="px-2 py-1 rounded text-[10px] font-bold ${m.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
-                                ${m.status === 'active' ? 'فعال (قطع اشتراک)' : 'منقضی (فعال‌سازی)'}
-                            </button>
-                        </div>
+                        <button onclick="toggleSubscription(${m.id})" class="px-2 py-1 rounded text-[10px] font-bold ${m.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                            ${m.status === 'active' ? 'فعال (قطع)' : 'قفل (فعال‌سازی)'}
+                        </button>
                     </div>
                 `).join('');
+                return;
+            } 
+            
+            if (loggedInRole === 'client') {
+                document.getElementById('guest-view').classList.add('hidden');
+                document.getElementById('subscription-lock').classList.add('hidden');
+                document.getElementById('super-admin-view').classList.add('hidden');
+                document.getElementById('client-admin-view').classList.remove('hidden');
+                document.getElementById('btn-panel-text').innerText = "خروج از پنل";
+
+                let clientMurasim = platformDB.murasims.find(m => m.id === loggedInClientId);
+                document.getElementById('client-panel-title').innerText = clientMurasim.name;
+                document.getElementById('client-name').value = clientMurasim.name;
+                document.getElementById('client-time').value = clientMurasim.time;
+                document.getElementById('client-card').value = clientMurasim.card;
+                return;
             }
+
+            // نمای عمومی مهمان
+            document.getElementById('super-admin-view').classList.add('hidden');
+            document.getElementById('client-admin-view').classList.add('hidden');
+            document.getElementById('btn-panel-text').innerText = "ورود به پنل";
+
+            if (current.status === 'expired') {
+                document.getElementById('guest-view').classList.add('hidden');
+                document.getElementById('subscription-lock').classList.remove('hidden');
+            } else {
+                document.getElementById('subscription-lock').classList.add('hidden');
+                document.getElementById('guest-view').classList.remove('hidden');
+                document.getElementById('fatiha-count').innerText = current.fatiha.toLocaleString('fa-IR');
+                document.getElementById('murasim-time').innerText = current.time;
+                document.getElementById('family-card').innerText = current.card.replace(/(\d{4})(?=\d)/g, '$1-');
+            }
+        }
+
+        function openLoginModal() {
+            if (loggedInRole !== 'guest') {
+                loggedInRole = 'guest';
+                loggedInClientId = null;
+                savePlatformData();
+                return;
+            }
+
+            let user = prompt("نام کاربری یا کلمه (admin) را وارد کنید:");
+            if (!user) return;
+
+            if (user.toLowerCase() === 'admin') {
+                let pass = prompt("رمز عبور مدیر کل را وارد کنید:");
+                if (pass === SUPER_PASSWORD) {
+                    loggedInRole = 'super';
+                    savePlatformData();
+                } else {
+                    alert("رمز عبور مدیر کل اشتباه است.");
+                }
+            } else {
+                let pass = prompt("رمز عبور اختصاصی خانواده را وارد کنید:");
+                let found = platformDB.murasims.find(m => m.username === user && m.password === pass);
+                if (found) {
+                    loggedInRole = 'client';
+                    loggedInClientId = found.id;
+                    platformDB.currentId = found.id; // تغییر خودکار صفحه به صفحه خودشان
+                    savePlatformData();
+                } else {
+                    alert("نام کاربری یا رمز عبور خانواده اشتباه است.");
+                }
+            }
+        }
+
+        function superCreateMurasim() {
+            const name = document.getElementById('adm-name').value.trim();
+            const user = document.getElementById('adm-user').value.trim();
+            const pass = document.getElementById('adm-pass').value.trim();
+            const card = document.getElementById('adm-card').value.trim();
+            const status = document.getElementById('adm-status').value;
+
+            if(!name || !user || !pass) return alert("پر کردن نام مرحوم، یوزر و پسورد الزامی است.");
+
+            const newId = Date.now();
+            platformDB.murasims.push({
+                id: newId,
+                name: name,
+                username: user,
+                password: pass,
+                time: "زمان و مکان توسط خانواده تعیین نشده است",
+                card: card || "وارد نشده",
+                status: status,
+                fatiha: 0
+            });
+
+            platformDB.currentId = newId;
+            savePlatformData();
+            alert("اکانت خانواده با موفقیت ایجاد شد. اطلاعات ورود را به آن‌ها تحویل دهید.");
+        }
+
+        function clientSaveData() {
+            let current = platformDB.murasims.find(m => m.id === loggedInClientId);
+            current.name = document.getElementById('client-name').value.trim();
+            current.time = document.getElementById('client-time').value.trim();
+            current.card = document.getElementById('client-card').value.trim();
+            savePlatformData();
+            alert("مشخصات مجلس شما با موفقیت بروزرسانی شد و روی سایت اعمال گردید.");
+        }
+
+        function toggleSubscription(id) {
+            let m = platformDB.murasims.find(m => m.id === id);
+            m.status = m.status === 'active' ? 'expired' : 'active';
+            savePlatformData();
         }
 
         function switchMurasim(id) {
             platformDB.currentId = parseInt(id);
-            savePlatformData();
+            initPlatform();
         }
 
         function sendFatiha() {
@@ -178,67 +289,13 @@
         function copyCard() {
             let current = platformDB.murasims.find(m => m.id == platformDB.currentId);
             navigator.clipboard.writeText(current.card);
-            alert("شماره کارت خانواده کپی شد.");
+            alert("شماره کارت کپی شد.");
         }
 
-        function accessAdminPanel() {
-            if (!isSystemAdmin) {
-                let pass = prompt("لطفاً رمز عبور مدیریت کل را وارد کنید:");
-                if (pass === ADMIN_PASSWORD) {
-                    isSystemAdmin = true;
-                    document.getElementById('guest-view').classList.add('hidden');
-                    document.getElementById('subscription-lock').classList.add('hidden');
-                    document.getElementById('admin-view').classList.remove('hidden');
-                    document.getElementById('admin-btn').innerHTML = `<i class="fa-solid fa-eye"></i> <span>نمای کاربران</span>`;
-                    initPlatform();
-                } else {
-                    alert("رمز عبور اشتباه است!");
-                }
-            } else {
-                isSystemAdmin = false;
-                document.getElementById('admin-view').classList.add('hidden');
-                document.getElementById('admin-btn').innerHTML = `<i class="fa-solid fa-user-gear"></i> <span>مدیریت کل</span>`;
-                initPlatform();
-            }
-        }
-
-        function createNewMurasim() {
-            const name = document.getElementById('new-name').value.trim();
-            const time = document.getElementById('new-time').value.trim();
-            const card = document.getElementById('new-card').value.trim();
-            const status = document.getElementById('new-status').value;
-
-            if(!name || !card) return alert("پر کردن نام و شماره کارت الزامی است.");
-
-            const newId = Date.now();
-            platformDB.murasims.push({
-                id: newId,
-                name: name,
-                time: time || "در حال برگزاری",
-                card: card,
-                status: status,
-                fatiha: 0
-            });
-
-            platformDB.currentId = newId;
-            document.getElementById('new-name').value = '';
-            document.getElementById('new-time').value = '';
-            document.getElementById('new-card').value = '';
-            
-            alert("مراسم جدید با موفقیت ساخته و فعال شد.");
-            savePlatformData();
-        }
-
-        function toggleSubscription(id) {
-            let murasim = platformDB.murasims.find(m => m.id === id);
-            murasim.status = murasim.status === 'active' ? 'expired' : 'active';
-            savePlatformData();
-        }
-
-        // اجرای اولیه پلتفرم
         initPlatform();
     </script>
 </body>
 </html>
+
 
 
