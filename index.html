@@ -151,3 +151,148 @@
     // فراخوانی در شروع کار
     renderList();
 </script>
+<div id="page-payment" class="page p-6 space-y-4">
+    <button onclick="showPage('page-list')" class="text-xs text-zinc-500">← بازگشت به لیست</button>
+    <h2 id="pay-name" class="text-xl font-bold gold-text"></h2>
+    
+    <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 text-center">
+        <p class="text-sm">شماره کارت جهت واریز سرباره:</p>
+        <p id="pay-card" class="text-2xl font-bold my-4 tracking-widest text-gold-text"></p>
+        
+        <div class="space-y-3 mt-6">
+            <input type="text" id="payer-name" placeholder="نام پرداخت‌کننده" class="w-full bg-black p-3 rounded-xl border border-zinc-800 text-center">
+            <button onclick="processPayment()" class="w-full bg-gold text-black font-bold py-3 rounded-xl">ثبت واریزی و دریافت کد پیگیری</button>
+        </div>
+        
+        <div id="tracking-box" class="hidden mt-6 p-4 bg-zinc-800 rounded-xl border border-green-700">
+            <p class="text-xs text-zinc-400">کد پیگیری شما:</p>
+            <p id="tracking-code" class="text-xl font-mono text-green-500 font-bold"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // پردازش پرداخت و تولید کد پیگیری
+    function processPayment() {
+        let name = document.getElementById('payer-name').value;
+        if (!name) {
+            alert("لطفاً نام پرداخت‌کننده را وارد کنید.");
+            return;
+        }
+
+        // تولید کد پیگیری ۱۲ رقمی تصادفی
+        let code = Math.floor(100000000000 + Math.random() * 900000000000);
+        
+        // نمایش در باکس
+        document.getElementById('tracking-code').innerText = code;
+        document.getElementById('tracking-box').classList.remove('hidden');
+        
+        // غیرفعال کردن دکمه بعد از ثبت
+        event.target.disabled = true;
+        event.target.innerText = "ثبت شد";
+        event.target.classList.replace('bg-gold', 'bg-zinc-700');
+    }
+</script>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاتحه آنلاین بختیاری</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background: #0a0a0a; color: #e5e5e5; }
+        .gold-text { color: #d4af37; }
+        .bg-gold { background-color: #d4af37; }
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+</head>
+<body class="pb-24">
+
+    <header class="p-6 border-b border-zinc-800 text-center">
+        <h1 class="text-xl font-black gold-text">فاتحه آنلاین بختیاری</h1>
+    </header>
+
+    <div id="page-list" class="page active p-6">
+        <h2 class="text-sm text-zinc-400 mb-4">مراسم‌های در حال برگزاری:</h2>
+        <div id="murasim-list" class="space-y-3"></div>
+    </div>
+
+    <div id="page-login" class="page p-6 space-y-4">
+        <h2 class="text-lg font-bold">ورود به پنل</h2>
+        <input type="text" id="phone" placeholder="شماره موبایل" class="w-full bg-zinc-900 p-3 rounded-xl border border-zinc-700">
+        <button onclick="handleLogin()" class="w-full bg-gold text-black font-bold py-3 rounded-xl">ورود</button>
+    </div>
+
+    <div id="panel-admin" class="page p-6"><h2 class="text-red-500 font-bold">پنل مدیریت</h2><button onclick="logout()" class="mt-4 w-full bg-zinc-800 py-3 rounded-xl">خروج</button></div>
+    <div id="panel-owner" class="page p-6 space-y-3">
+        <h2 class="text-green-500 font-bold">ثبت مراسم جدید</h2>
+        <input type="text" id="m-name" placeholder="نام مرحوم" class="w-full bg-zinc-900 p-3 rounded-xl">
+        <input type="text" id="m-card" placeholder="شماره کارت" class="w-full bg-zinc-900 p-3 rounded-xl">
+        <button onclick="createMurasim()" class="w-full bg-green-700 py-3 rounded-xl">ثبت</button>
+        <button onclick="logout()" class="w-full bg-zinc-800 py-3 rounded-xl">خروج</button>
+    </div>
+    <div id="panel-user" class="page p-6"><h2 class="text-blue-500 font-bold">پروفایل کاربری</h2><button onclick="logout()" class="mt-4 w-full bg-zinc-800 py-3 rounded-xl">خروج</button></div>
+
+    <div id="page-payment" class="page p-6 space-y-4">
+        <button onclick="showPage('page-list')" class="text-xs">← بازگشت</button>
+        <h2 id="pay-name" class="text-lg gold-text"></h2>
+        <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-700 text-center">
+            <p id="pay-card" class="text-xl font-bold my-4"></p>
+            <input type="text" id="payer-name" placeholder="نام پرداخت کننده" class="w-full bg-black p-3 rounded-xl mb-2 text-center">
+            <button onclick="processPayment()" class="w-full bg-gold text-black font-bold py-3 rounded-xl">ثبت و دریافت کد پیگیری</button>
+            <div id="tracking-box" class="hidden mt-4 p-3 bg-zinc-800 rounded-xl text-green-500 font-bold">کد پیگیری: <span id="tracking-code"></span></div>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 w-full bg-zinc-900 border-t border-zinc-800 p-3 flex justify-around">
+        <button onclick="showPage('page-list')" class="text-[10px]"><i class="fa-solid fa-house"></i><br>خانه</button>
+        <button onclick="showPage('page-login')" class="text-[10px]"><i class="fa-solid fa-user"></i><br>ورود</button>
+    </nav>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function handleLogin() {
+            let phone = document.getElementById('phone').value;
+            if (phone === "09964677831") showPage('panel-admin');
+            else if (confirm("صاحب‌عزا هستید؟")) showPage('panel-owner');
+            else showPage('panel-user');
+        }
+
+        function createMurasim() {
+            let db = JSON.parse(localStorage.getItem('db')) || [];
+            db.push({ name: document.getElementById('m-name').value, card: document.getElementById('m-card').value });
+            localStorage.setItem('db', JSON.stringify(db));
+            location.reload();
+        }
+
+        function openPayment(index) {
+            let db = JSON.parse(localStorage.getItem('db'));
+            document.getElementById('pay-name').innerText = db[index].name;
+            document.getElementById('pay-card').innerText = db[index].card;
+            showPage('page-payment');
+        }
+
+        function processPayment() {
+            document.getElementById('tracking-code').innerText = Math.floor(100000000000 + Math.random() * 900000000000);
+            document.getElementById('tracking-box').classList.remove('hidden');
+        }
+
+        function logout() { location.reload(); }
+
+        let db = JSON.parse(localStorage.getItem('db')) || [];
+        document.getElementById('murasim-list').innerHTML = db.map((m, i) => `
+            <div onclick="openPayment(${i})" class="bg-zinc-900 p-4 rounded-xl border border-zinc-700 cursor-pointer">
+                <h3 class="font-bold gold-text">${m.name}</h3>
+                <p class="text-[10px]">کلیک برای پرداخت</p>
+            </div>`).join('');
+    </script>
+</body>
+</html>
