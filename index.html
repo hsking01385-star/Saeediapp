@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتحه آنلاین بختیاری</title>
+    <title>سامانه جامع فاتحه آنلاین</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,80 +11,17 @@
         body { font-family: 'Vazirmatn', sans-serif; background: #0a0a0a; color: #e5e5e5; }
         .gold-text { color: #d4af37; }
         .bg-gold { background-color: #d4af37; }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #a1a1aa; }
+        .page { display: none; }
+        .active { display: block; }
     </style>
 </head>
 <body class="pb-24">
 
-    <header class="p-4 border-b border-zinc-800 text-center"><h1 class="text-lg font-black gold-text">فاتحه آنلاین</h1></header>
+    <header class="p-6 border-b border-zinc-800 text-center">
+        <h1 class="text-xl font-black gold-text">فاتحه آنلاین بختیاری</h1>
+    </header>
 
-    <div id="page-list" class="p-6">
-        <h2 class="text-sm text-zinc-400 mb-4">مراسم‌های فعال</h2>
-        <div id="murasim-list" class="space-y-3"></div>
-    </div>
+    
 
-    <div id="page-auth" class="hidden p-6 space-y-4">
-        <h2 class="text-lg font-bold text-center">ورود به سامانه</h2>
-        <button onclick="loginProcess()" class="w-full bg-zinc-900 p-4 rounded-xl border border-gold-text text-sm">ورود (صاحب عزا / کاربر / ادمین)</button>
-    </div>
-
-    <div id="page-rules" class="hidden p-6 text-xs text-zinc-400 leading-6 text-center">
-        <h2 class="gold-text font-bold mb-2">قوانین سامانه</h2>
-        <p>این سامانه صرفاً یک پل ارتباطی است. مسئولیت صحت اطلاعات و تراکنش‌های مالی بر عهده کاربران است.</p>
-    </div>
-
-    <nav class="fixed bottom-0 w-full bg-zinc-900 border-t border-zinc-800 p-3 flex justify-around">
-        <button onclick="showPage('page-list')" class="nav-btn"><i class="fa-solid fa-house"></i>خانه</button>
-        <button onclick="showPage('page-auth')" class="nav-btn"><i class="fa-solid fa-user"></i>ورود</button>
-        <button onclick="showPage('page-rules')" class="nav-btn"><i class="fa-solid fa-gavel"></i>قوانین</button>
-    </nav>
-
-    <script>
-        function showPage(pageId) {
-            ['page-list', 'page-auth', 'page-rules'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-        }
-
-        function loginProcess() {
-            let phone = prompt("شماره موبایل خود را وارد کنید:");
-            if (!phone) return;
-
-            // تشخیص ادمین
-            if (phone === "09964677831") {
-                let pass = prompt("رمز عبور ادمین:");
-                if (pass === "1234a") {
-                    alert("خوش آمدید ادمین عزیز. پنل فعال شد.");
-                } else {
-                    alert("رمز اشتباه است!");
-                }
-            } 
-            // تشخیص صاحب عزا
-            else {
-                let role = confirm("آیا می‌خواهید به عنوان صاحب‌عزا مراسم ثبت کنید؟ (Cancel برای کاربر عادی)") ? "صاحب عزا" : "کاربر";
-                alert(`خوش آمدید! ورود موفق به عنوان ${role}`);
-                if (role === "صاحب عزا") {
-                    let name = prompt("نام مرحوم:");
-                    let card = prompt("شماره کارت:");
-                    if(name && card) {
-                        let murasims = JSON.parse(localStorage.getItem('db')) || [];
-                        murasims.push({ name, card });
-                        localStorage.setItem('db', JSON.stringify(murasims));
-                        location.reload();
-                    }
-                }
-            }
-        }
-
-        // بارگذاری مراسم‌ها
-        let murasims = JSON.parse(localStorage.getItem('db')) || [];
-        document.getElementById('murasim-list').innerHTML = murasims.map(m => `
-            <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                <h3 class="font-bold gold-text">${m.name}</h3>
-                <p class="text-[10px] text-zinc-500">شماره کارت: ${m.card}</p>
-            </div>
-        `).join('');
-    </script>
-</body>
-</html>
 
   
