@@ -3,299 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پلتفرم هوشمند یادبود مجازی</title>
+    <title>فاتحه آنلاین</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" />
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #09090b; color: #f4f4f5; }
-        ::-webkit-scrollbar { display: none; }
+        body { font-family: 'Vazirmatn', sans-serif; background: #0a0a0a; color: #e5e5e5; }
+        .gold-text { color: #d4af37; }
+        .bg-gold { background-color: #d4af37; }
+        .bg-maroon { background-color: #4a0404; }
     </style>
 </head>
-<body class="max-w-md mx-auto min-h-screen flex flex-col justify-between selection:bg-amber-500/20">
+<body class="flex flex-col min-h-screen">
 
-    <div class="bg-zinc-900/90 sticky top-0 z-50 backdrop-blur border-b border-zinc-800 px-4 py-4 flex justify-between items-center">
-        <button onclick="openLoginModal()" id="admin-btn" class="bg-zinc-800 text-amber-400 text-[11px] font-bold px-3 py-1.5 rounded-lg border border-zinc-700/50 flex items-center gap-1">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            <span id="btn-panel-text">ورود به پنل</span>
+    <!-- هدر -->
+    <header class="p-4 flex justify-between items-center border-b border-zinc-800">
+        <h1 class="text-lg font-black gold-text">فاتحه آنلاین</h1>
+        <button onclick="toggleMenu()" class="text-2xl gold-text">☰</button>
+    </header>
+
+    <!-- منوی همبرگری -->
+    <div id="menu" class="hidden absolute top-16 right-4 w-48 bg-zinc-900 border border-zinc-700 rounded-xl p-4 z-50">
+        <ul class="space-y-4 text-xs">
+            <li>صفحه اصلی</li>
+            <li>مدیریت مراسم</li>
+            <li>تماس با پشتیبانی</li>
+        </ul>
+    </div>
+
+    <!-- محتوای اصلی -->
+    <div class="flex-1 p-6 space-y-6">
+        <!-- کارت ثبت سرباره -->
+        <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800">
+            <h2 class="gold-text font-bold text-sm mb-4">ثبت کمک مالی (سرباره)</h2>
+            <input type="text" id="donor-name" placeholder="نام و نام خانوادگی خیر" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs mb-3">
+            <input type="text" id="donor-ref" placeholder="کد پیگیری واریزی" class="w-full bg-black border border-zinc-700 p-3 rounded-xl text-xs mb-3">
+            <button onclick="registerDonation()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 rounded-xl text-xs">ثبت در لیست خیرین</button>
+        </div>
+    </div>
+
+    <!-- دکمه‌های پایین صفحه -->
+    <div class="p-6 bg-zinc-900 rounded-t-3xl border-t border-zinc-700 space-y-3">
+        <button onclick="alert('لطفاً مبلغ ۸۰,۰۰۰ تومان به کارت ۶۲۱۹۸۶۱۴۳۵۶۵۰۲۸۷ به نام حمیدرضا سعیدی واریز کنید.')" class="w-full bg-gold text-black font-bold py-3 rounded-xl text-xs">
+            <span>+ ثبت مراسم جدید (۸۰ هزار تومان)</span>
         </button>
-        <div class="text-left">
-            <select id="murasim-selector" onchange="switchMurasim(this.value)" class="bg-zinc-950 border border-zinc-800 text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none">
-            </select>
-        </div>
+        <button onclick="window.open('https://wa.me/989964677831', '_blank')" class="w-full bg-maroon text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2">
+            <span>📞 تایید واریزی توسط ادمین</span>
+        </button>
+        <p class="text-[10px] text-center text-zinc-500 pt-2">مدیریت: حمیدرضا سعیدی</p>
     </div>
-
-    <div id="subscription-lock" class="flex-1 p-6 flex flex-col justify-center items-center text-center space-y-4 hidden">
-        <div class="w-16 h-16 bg-red-500/10 border border-red-500/30 text-red-500 rounded-full flex items-center justify-center text-2xl animate-bounce">
-            <i class="fa-solid fa-hourglass-end"></i>
-        </div>
-        <h2 class="text-sm font-black text-zinc-200">پلن اشتراک این صفحه به پایان رسیده است</h2>
-        <p class="text-xs text-zinc-400 max-w-xs leading-relaxed">
-            خانواده محترم متوفی، جهت تایید و فعال‌سازی مجدد صفحه یادبود، لطفاً حق اشتراک پلتفرم را به شماره کارت زیر واریز کرده و رسید را به پشتیبانی ارسال فرمایید.
-        </p>
-        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl w-full space-y-2">
-            <span class="text-[10px] text-zinc-500 block">شماره کارت مدیریت پلتفرم</span>
-            <span class="font-mono text-amber-400 font-bold tracking-wider text-sm">۶۲۷۳-۵۳۳۱-۱۱۲۲-۳۳۴۴</span>
-        </div>
-    </div>
-
-    <main id="guest-view" class="flex-1 p-4 space-y-4 overflow-y-auto">
-        <div class="bg-zinc-900/60 border border-zinc-800/80 p-3 rounded-xl text-center flex items-center justify-center gap-2 text-xs text-zinc-400">
-            <i class="fa-regular fa-clock text-amber-500 animate-pulse"></i>
-            <span id="murasim-time">در حال بارگذاری...</span>
-        </div>
-
-        <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl text-center shadow-xl">
-            <h3 class="text-zinc-400 text-xs font-bold mb-1">هدیه معنوی به روح مرحوم</h3>
-            <div id="fatiha-count" class="text-4xl font-black text-amber-400 tracking-wide my-2">۰</div>
-            <button onclick="sendFatiha()" class="w-full bg-amber-500 hover:bg-amber-600 text-zinc-950 font-black py-3 rounded-xl flex items-center justify-center gap-2 text-sm shadow-lg shadow-amber-500/10">
-                <i class="fa-solid fa-hands-pray"></i>
-                ارسال صلوات و فاتحه آنلاین
-            </button>
-        </div>
-
-        <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl shadow-xl space-y-4">
-            <h3 class="text-zinc-200 font-bold text-xs flex items-center gap-2 border-b border-zinc-800/60 pb-2">
-                <i class="fa-solid fa-credit-card text-amber-500"></i>
-                همیاری و سرباره (امور خیریه مرحوم)
-            </h3>
-            <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 flex justify-between items-center">
-                <button onclick="copyCard()" class="bg-zinc-800 text-zinc-300 text-[10px] px-2.5 py-1.5 rounded-lg">کپی</button>
-                <span class="font-mono text-zinc-300 text-xs tracking-wider font-bold" id="family-card">---- ---- ---- ----</span>
-            </div>
-        </div>
-    </main>
-
-    <main id="super-admin-view" class="flex-1 p-4 space-y-4 overflow-y-auto hidden">
-        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl space-y-4">
-            <h2 class="text-amber-400 font-black text-xs flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i>
-                افتتاح صفحه یادبود و اکانت جدید
-            </h2>
-            <div class="space-y-3">
-                <input type="text" id="adm-name" placeholder="نام متوفی (مثلا: شادروان علی احمدی)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="adm-user" placeholder="نام کاربری خانواده" class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                    <input type="text" id="adm-pass" placeholder="رمز عبور خانواده" class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                </div>
-                <input type="text" id="adm-card" placeholder="شماره کارت خانواده (اختیاری - خودشان هم میتوانند بزنند)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                <div class="flex items-center justify-between bg-zinc-950 p-3 rounded-xl border border-zinc-800">
-                    <span class="text-xs text-zinc-400">وضعیت حق اشتراک</span>
-                    <select id="adm-status" class="bg-zinc-900 border border-zinc-700 text-xs text-zinc-200 rounded px-2 py-1">
-                        <option value="active">فعال (اشتراک دارد)</option>
-                        <option value="expired">غیرفعال (بدون اشتراک)</option>
-                    </select>
-                </div>
-                <button onclick="superCreateMurasim()" class="w-full bg-amber-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs">ایجاد صفحه و اکانت</button>
-            </div>
-        </div>
-        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl">
-            <h3 class="text-zinc-300 font-bold text-xs mb-3">مدیریت کل صفحات و تمدید اشتراک‌ها</h3>
-            <div id="super-list-container" class="space-y-2"></div>
-        </div>
-    </main>
-
-    <main id="client-admin-view" class="flex-1 p-4 space-y-4 overflow-y-auto hidden">
-        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl space-y-4">
-            <div class="border-b border-zinc-800 pb-2">
-                <h2 class="text-amber-400 font-black text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    پنل مدیریت اختصاصی خانواده <span id="client-panel-title" class="text-zinc-200"></span>
-                </h2>
-                <p class="text-[10px] text-zinc-500 mt-1">مشخصات مجلس خود را در این بخش تعیین و بروزرسانی کنید.</p>
-            </div>
-            <div class="space-y-3">
-                <div>
-                    <label class="text-[10px] text-zinc-400 block mb-1">نام و عنوان صفحه:</label>
-                    <input type="text" id="client-name" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] text-zinc-400 block mb-1">زمان و جزئیات مجلس ختم (توسط شما تعیین می‌شود):</label>
-                    <input type="text" id="client-time" placeholder="مثال: فردا ساعت ۱۶ الی ۱۸ در مسجد جامع" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] text-zinc-400 block mb-1">شماره کارت بانکی جهت همیاری و امور خیریه:</label>
-                    <input type="text" id="client-card" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none">
-                </div>
-                <button onclick="clientSaveData()" class="w-full bg-emerald-500 text-zinc-950 font-black py-2.5 rounded-xl text-xs">ذخیره و بروزرسانی تغییرات صفحه</button>
-            </div>
-        </div>
-    </main>
 
     <script>
-        let platformDB = JSON.parse(localStorage.getItem('multi_user_murasim_db')) || {
-            currentId: 1,
-            murasims: [
-                { id: 1, name: "شادروان علی احمدی", username: "ali", password: "123", time: "فردا ساعت ۱۶ الی ۱۸ در مسجد جامع", card: "۶۰۳۷۹۹۷۹۱۲۳۴۵۶۷۸", status: "active", fatiha: 142 },
-                { id: 2, name: "مرحومه سیده زهرا حسینی", username: "zahra", password: "456", time: "مراسم پایان یافته است", card: "۵۸۹۲۱۰۱۲۳۴۵۶۷۸۹۰", status: "expired", fatiha: 89 }
-            ]
-        };
-
-        const SUPER_PASSWORD = "1234"; 
-        let loggedInRole = 'guest'; // guest, super, client
-        let loggedInClientId = null;
-
-        function savePlatformData() {
-            localStorage.setItem('multi_user_murasim_db', JSON.stringify(platformDB));
-            initPlatform();
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('hidden');
         }
 
-        function initPlatform() {
-            const selector = document.getElementById('murasim-selector');
-            const currentMurasimId = platformDB.currentId;
-            const current = platformDB.murasims.find(m => m.id == currentMurasimId);
-
-            selector.innerHTML = platformDB.murasims.map(m => `<option value="${m.id}" ${m.id == currentMurasimId ? 'selected' : ''}>${m.name}</option>`).join('');
-
-            // مدیریت ویوها بر اساس رول لاگین شده
-            if (loggedInRole === 'super') {
-                document.getElementById('guest-view').classList.add('hidden');
-                document.getElementById('subscription-lock').classList.add('hidden');
-                document.getElementById('client-admin-view').classList.add('hidden');
-                document.getElementById('super-admin-view').classList.remove('hidden');
-                document.getElementById('btn-panel-text').innerText = "خروج از پنل";
-
-                document.getElementById('super-list-container').innerHTML = platformDB.murasims.map(m => `
-                    <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
-                        <div>
-                            <p class="font-bold text-zinc-200">${m.name}</p>
-                            <p class="text-[10px] text-zinc-500">یوزر: ${m.username} | رمز: ${m.password}</p>
-                        </div>
-                        <button onclick="toggleSubscription(${m.id})" class="px-2 py-1 rounded text-[10px] font-bold ${m.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
-                            ${m.status === 'active' ? 'فعال (قطع)' : 'قفل (فعال‌سازی)'}
-                        </button>
-                    </div>
-                `).join('');
-                return;
-            } 
-            
-            if (loggedInRole === 'client') {
-                document.getElementById('guest-view').classList.add('hidden');
-                document.getElementById('subscription-lock').classList.add('hidden');
-                document.getElementById('super-admin-view').classList.add('hidden');
-                document.getElementById('client-admin-view').classList.remove('hidden');
-                document.getElementById('btn-panel-text').innerText = "خروج از پنل";
-
-                let clientMurasim = platformDB.murasims.find(m => m.id === loggedInClientId);
-                document.getElementById('client-panel-title').innerText = clientMurasim.name;
-                document.getElementById('client-name').value = clientMurasim.name;
-                document.getElementById('client-time').value = clientMurasim.time;
-                document.getElementById('client-card').value = clientMurasim.card;
-                return;
-            }
-
-            // نمای عمومی مهمان
-            document.getElementById('super-admin-view').classList.add('hidden');
-            document.getElementById('client-admin-view').classList.add('hidden');
-            document.getElementById('btn-panel-text').innerText = "ورود به پنل";
-
-            if (current.status === 'expired') {
-                document.getElementById('guest-view').classList.add('hidden');
-                document.getElementById('subscription-lock').classList.remove('hidden');
+        function registerDonation() {
+            const name = document.getElementById('donor-name').value;
+            const ref = document.getElementById('donor-ref').value;
+            if(name && ref) {
+                alert("نام " + name + " با کد پیگیری " + ref + " با موفقیت ثبت شد.");
             } else {
-                document.getElementById('subscription-lock').classList.add('hidden');
-                document.getElementById('guest-view').classList.remove('hidden');
-                document.getElementById('fatiha-count').innerText = current.fatiha.toLocaleString('fa-IR');
-                document.getElementById('murasim-time').innerText = current.time;
-                document.getElementById('family-card').innerText = current.card.replace(/(\d{4})(?=\d)/g, '$1-');
+                alert("لطفاً نام و کد پیگیری را وارد کنید.");
             }
         }
-
-        function openLoginModal() {
-            if (loggedInRole !== 'guest') {
-                loggedInRole = 'guest';
-                loggedInClientId = null;
-                savePlatformData();
-                return;
-            }
-
-            let user = prompt("نام کاربری یا کلمه (admin) را وارد کنید:");
-            if (!user) return;
-
-            if (user.toLowerCase() === 'admin') {
-                let pass = prompt("رمز عبور مدیر کل را وارد کنید:");
-                if (pass === SUPER_PASSWORD) {
-                    loggedInRole = 'super';
-                    savePlatformData();
-                } else {
-                    alert("رمز عبور مدیر کل اشتباه است.");
-                }
-            } else {
-                let pass = prompt("رمز عبور اختصاصی خانواده را وارد کنید:");
-                let found = platformDB.murasims.find(m => m.username === user && m.password === pass);
-                if (found) {
-                    loggedInRole = 'client';
-                    loggedInClientId = found.id;
-                    platformDB.currentId = found.id; // تغییر خودکار صفحه به صفحه خودشان
-                    savePlatformData();
-                } else {
-                    alert("نام کاربری یا رمز عبور خانواده اشتباه است.");
-                }
-            }
-        }
-
-        function superCreateMurasim() {
-            const name = document.getElementById('adm-name').value.trim();
-            const user = document.getElementById('adm-user').value.trim();
-            const pass = document.getElementById('adm-pass').value.trim();
-            const card = document.getElementById('adm-card').value.trim();
-            const status = document.getElementById('adm-status').value;
-
-            if(!name || !user || !pass) return alert("پر کردن نام مرحوم، یوزر و پسورد الزامی است.");
-
-            const newId = Date.now();
-            platformDB.murasims.push({
-                id: newId,
-                name: name,
-                username: user,
-                password: pass,
-                time: "زمان و مکان توسط خانواده تعیین نشده است",
-                card: card || "وارد نشده",
-                status: status,
-                fatiha: 0
-            });
-
-            platformDB.currentId = newId;
-            savePlatformData();
-            alert("اکانت خانواده با موفقیت ایجاد شد. اطلاعات ورود را به آن‌ها تحویل دهید.");
-        }
-
-        function clientSaveData() {
-            let current = platformDB.murasims.find(m => m.id === loggedInClientId);
-            current.name = document.getElementById('client-name').value.trim();
-            current.time = document.getElementById('client-time').value.trim();
-            current.card = document.getElementById('client-card').value.trim();
-            savePlatformData();
-            alert("مشخصات مجلس شما با موفقیت بروزرسانی شد و روی سایت اعمال گردید.");
-        }
-
-        function toggleSubscription(id) {
-            let m = platformDB.murasims.find(m => m.id === id);
-            m.status = m.status === 'active' ? 'expired' : 'active';
-            savePlatformData();
-        }
-
-        function switchMurasim(id) {
-            platformDB.currentId = parseInt(id);
-            initPlatform();
-        }
-
-        function sendFatiha() {
-            let current = platformDB.murasims.find(m => m.id == platformDB.currentId);
-            current.fatiha += 1;
-            savePlatformData();
-        }
-
-        function copyCard() {
-            let current = platformDB.murasims.find(m => m.id == platformDB.currentId);
-            navigator.clipboard.writeText(current.card);
-            alert("شماره کارت کپی شد.");
-        }
-
-        initPlatform();
     </script>
 </body>
 </html>
-
-
-
