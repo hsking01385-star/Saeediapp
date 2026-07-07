@@ -1,1 +1,180 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اپلیکیشن یادبود مجازی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn-font@5.0.1/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #09090b; color: #f4f4f5; }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col justify-between selection:bg-amber-500/20">
+
+    <div class="bg-zinc-900/90 sticky top-0 z-50 backdrop-blur border-b border-zinc-800 px-4 py-4 flex justify-between items-center">
+        <button onclick="toggleAdmin()" id="admin-btn" class="bg-zinc-800 text-amber-400 text-[11px] font-bold px-3 py-1.5 rounded-lg border border-zinc-700/50 flex items-center gap-1">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>پنل ادمین</span>
+        </button>
+        <h1 class="text-xs font-black text-zinc-200" id="app-title">یادبود مجازی شادروان علی احمدی</h1>
+    </div>
+
+    <main id="guest-view" class="flex-1 p-4 space-y-4 overflow-y-auto">
+        <div class="bg-zinc-900/60 border border-zinc-800/80 p-3 rounded-xl text-center flex items-center justify-center gap-2 text-xs text-zinc-400">
+            <i class="fa-regular fa-clock text-amber-500 animate-pulse"></i>
+            <span>۲ ساعت و ۴۵ دقیقه تا شروع مراسم ختم مجازی</span>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl text-center shadow-xl">
+            <h3 class="text-zinc-400 text-xs font-bold mb-1">هدیه معنوی به روح مرحوم</h3>
+            <div id="fatiha-count" class="text-4xl font-black text-amber-400 tracking-wide my-2">۱۴۲</div>
+            <p class="text-[10px] text-zinc-500 mb-4">صلوات و فاتحه فرستاده شده است</p>
+            
+            <button onclick="sendFatiha()" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-[0.98] transition-all text-zinc-950 font-black py-3 rounded-xl flex items-center justify-center gap-2 text-sm shadow-lg shadow-amber-500/10">
+                <i class="fa-solid fa-hands-pray text-base"></i>
+                ارسال صلوات و فاتحه آنلاین
+            </button>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl shadow-xl space-y-4">
+            <div class="border-b border-zinc-800/60 pb-2">
+                <h3 class="text-zinc-200 font-bold text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-credit-card text-amber-500"></i>
+                    همیاری و سرباره (امور خیریه)
+                </h3>
+            </div>
+
+            <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 flex justify-between items-center">
+                <button onclick="copyCard()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] px-2.5 py-1.5 rounded-lg transition">کپی</button>
+                <span class="font-mono text-zinc-300 text-xs tracking-wider font-bold" id="card-num">۶۰۳۷-۹۹۷۹-۱۲۳۴-۵۶۷۸</span>
+            </div>
+
+            <div class="space-y-3">
+                <input type="text" id="sender-name" placeholder="نام و نام خانوادگی شما" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-amber-500/40">
+                <textarea id="sender-msg" rows="2" placeholder="متن تسلیت شما..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-amber-500/40 resize-none"></textarea>
+                
+                <div class="border border-dashed border-zinc-700 bg-zinc-950 rounded-xl p-3 text-center relative cursor-pointer">
+                    <span class="text-[11px] text-zinc-500"><i class="fa-solid fa-image ml-1"></i>بارگذاری عکس فیش واریزی</span>
+                </div>
+
+                <button onclick="submitMessage()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold py-2.5 rounded-xl text-xs transition">ارسال پیام و فیش همدردی</button>
+            </div>
+        </div>
+
+        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl">
+            <h3 class="text-zinc-400 font-bold text-xs mb-3 flex items-center gap-1.5">
+                <i class="fa-solid fa-comment-dots text-zinc-500"></i>
+                پیام‌های ابراز همدردی آشنایان
+            </h3>
+            <div id="comments-container" class="space-y-2.5"></div>
+        </div>
+    </main>
+
+    <main id="admin-view" class="flex-1 p-4 space-y-4 overflow-y-auto hidden">
+        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl shadow-xl">
+            <h2 class="text-zinc-200 font-black text-xs mb-1 flex items-center gap-2 text-amber-400">
+                <i class="fa-solid fa-circle-check"></i>
+                تایید پیام‌ها و فیش‌های جدید
+            </h2>
+            <p class="text-[10px] text-zinc-500 mb-4">پیام‌های دریافتی پس از تایید شما در صفحه اصلی قرار می‌گیرند.</p>
+            <div id="admin-container" class="space-y-3"></div>
+        </div>
+    </main>
+
+    <script>
+        let db = JSON.parse(localStorage.getItem('memorial_db')) || {
+            fatiha: 142,
+            messages: [
+                { id: 1, name: "علی علوی", msg: "روحشان شاد و یادشان گرامی باد. خداوند به شما صبر دهد.", approved: true },
+                { id: 2, name: "رضا محمدی", msg: "ما را در غم خود شریک بدانید.", approved: true },
+                { id: 3, name: "حسین حسینی", msg: "فیش واریزی جهت امور خیریه ارسال شد.", approved: false }
+            ]
+        };
+
+        function saveDB() {
+            localStorage.setItem('memorial_db', JSON.stringify(db));
+            render();
+        }
+
+        function sendFatiha() {
+            db.fatiha += 1;
+            saveDB();
+        }
+
+        function copyCard() {
+            navigator.clipboard.writeText("6037997912345678");
+            alert("شماره کارت کپی شد.");
+        }
+
+        function submitMessage() {
+            const name = document.getElementById('sender-name').value.trim();
+            const msg = document.getElementById('sender-msg').value.trim();
+            if(!name) return alert("لطفاً نام خود را وارد کنید.");
+            
+            db.messages.unshift({
+                id: Date.now(),
+                name: name,
+                msg: msg || "روحش شاد و یادش گرامی باد.",
+                approved: false
+            });
+            
+            document.getElementById('sender-name').value = '';
+            document.getElementById('sender-msg').value = '';
+            alert("رسید و پیام شما ارسال شد. پس از تایید ادمین نمایش داده می‌شود.");
+            saveDB();
+        }
+
+        function approveMsg(id) {
+            db.messages = db.messages.map(m => m.id === id ? {...m, approved: true} : m);
+            saveDB();
+        }
+
+        let currentView = 'guest';
+        function toggleAdmin() {
+            const guestView = document.getElementById('guest-view');
+            const adminView = document.getElementById('admin-view');
+            const btnText = document.querySelector('#admin-btn span');
+            
+            if(currentView === 'guest') {
+                guestView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                btnText.innerText = "نمای مهمان";
+                currentView = 'admin';
+            } else {
+                guestView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+                btnText.innerText = "پنل ادمین";
+                currentView = 'guest';
+            }
+        }
+
+        function render() {
+            document.getElementById('fatiha-count').innerText = db.fatiha.toLocaleString('fa-IR');
+            const approvedHtml = db.messages.filter(m => m.approved).map(m => `
+                <div class="bg-zinc-800/40 p-3 rounded-xl border border-zinc-800 text-right">
+                    <span class="text-amber-400 font-bold text-[11px] block mb-0.5">${m.name}</span>
+                    <p class="text-zinc-300 text-xs leading-relaxed">${m.msg}</p>
+                </div>
+            `).join('');
+            document.getElementById('comments-container').innerHTML = approvedHtml || '<p class="text-zinc-600 text-center py-4 text-xs">هنوز پیامی ثبت نشده است.</p>';
+
+            const pendingHtml = db.messages.filter(m => !m.approved).map(m => `
+                <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-zinc-400 text-xs font-bold">${m.name}</span>
+                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20">دارای فیش</span>
+                    </div>
+                    <p class="text-zinc-400 text-xs">${m.msg}</p>
+                    <button onclick="approveMsg(${m.id})" class="w-full bg-emerald-500 text-zinc-950 text-xs font-bold py-1.5 rounded-lg">تایید و انتشار عمومی</button>
+                </div>
+            `).join('');
+            document.getElementById('admin-container').innerHTML = pendingHtml || '<p class="text-zinc-600 text-center py-4 text-xs">هیچ پیام جدیدی در صف تایید نیست.</p>';
+        }
+        render();
+    </script>
+</body>
+</html>
 
