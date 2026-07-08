@@ -1,39 +1,8 @@
-<style>
-    /* فونت فارسی کلاسیک برای حس رسمی */
-    @import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
-    
-    body { 
-        font-family: 'Scheherazade New', serif; /* فونت نستعلیق‌گونه */
-        background: #0f172a; /* آبی بسیار تیره (سرمه‌ای مسجد) */
-        color: #e2e8f0; 
-        background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-    }
-
-    /* رنگ طلایی تیره (شبیه برنج یا تذهیب) */
-    .gold-text { color: #c5a059; }
-    .bg-gold { background-color: #c5a059; }
-
-    /* ایجاد حاشیه شبیه به پارچه‌های ترحیم */
-    .mosque-border {
-        border: 2px solid #c5a059;
-        box-shadow: 0 0 15px rgba(197, 160, 89, 0.2);
-    }
-
-    /* کارت‌های مراسم شبیه قاب‌های ترحیم */
-    .card-style {
-        background: rgba(30, 41, 59, 0.7);
-        border: 1px solid #334155;
-        border-radius: 8px;
-    }
-</style>
-<div class="card-style mosque-border p-5 text-center cursor-pointer hover:bg-slate-800 transition">
-    <h3 class="font-bold text-lg gold-text mb-2">مجلس ترحیم مرحوم ${m.name}</h3>
-    <p class="text-[12px] opacity-70">جهت عرض تسلیت و پرداخت سرباره کلیک کنید</p>
-</div>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فاتحه آنلاین - مجلس یادبود</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -58,182 +27,187 @@
     </div>
 
     <div id="page-login" class="page p-6 space-y-4">
-        <input type="text" id="phone" placeholder="شماره مدیریت" class="w-full bg-slate-900 p-3 rounded-lg border border-zinc-700 text-center">
-        <button onclick="handleLogin()" class="w-full bg-gold text-black py-3 rounded-lg font-bold">ورود به پنل مدیریت</button>
+        <input type="text" id="phone" placeholder="شماره موبایل" class="w-full bg-slate-900 p-3 rounded-lg border border-zinc-700 text-center">
+        <button onclick="handleLogin()" class="w-full bg-gold text-black py-3 rounded-lg font-bold">ورود / ثبت نام</button>
     </div>
 
     <div id="panel-admin" class="page p-6 space-y-4">
-        <h2 class="text-gold-text text-xl">مدیریت مجالس</h2>
-        <input type="text" id="m-name" placeholder="نام مرحوم" class="w-full bg-slate-900 p-3 rounded">
-        <input type="text" id="m-card" placeholder="شماره کارت" class="w-full bg-slate-900 p-3 rounded">
-        <button onclick="adminAddMurasim()" class="w-full bg-green-800 py-3 rounded">ثبت مجلس جدید</button>
-        <div id="admin-transactions-list" class="text-xs space-y-2 mt-4"></div>
-        <button onclick="location.reload()" class="w-full bg-red-900 py-2 rounded">خروج</button>
-    </div>
-
-    <div id="page-payment" class="page p-6 text-center">
-        <h2 id="pay-name" class="text-2xl gold-text mb-4"></h2>
-        <div class="mosque-frame p-8 rounded-lg">
-            <p class="mb-4">جهت اهدای سرباره:</p>
-            <p id="pay-card" class="text-2xl font-bold tracking-widest mb-6"></p>
-            <input type="text" id="payer-name" placeholder="نام خیر" class="w-full bg-black p-3 mb-4 text-center rounded">
-            <button onclick="processPayment()" class="w-full bg-gold text-black py-3 rounded font-bold">ثبت و دریافت کد پیگیری</button>
-            <div id="tracking-box" class="hidden mt-6 text-green-500">کد پیگیری: <span id="tracking-code"></span></div>
+        <h2 class="text-gold-text text-xl font-bold">پنل مدیریت</h2>
+        <div class="bg-slate-900 p-4 rounded-lg border border-red-900">
+            <p class="text-xs text-zinc-400">تعداد کل کاربران:</p>
+            <p id="total-users" class="text-2xl font-bold gold-text">0</p>
         </div>
-        <button onclick="showPage('page-list')" class="mt-6 text-sm underline">بازگشت به مجالس</button>
+        <input type="text" id="m-name" placeholder="نام مرحوم" class="w-full bg-slate-900 p-3 rounded border border-zinc-800">
+        <input type="text" id="m-card" placeholder="شماره کارت" class="w-full bg-slate-900 p-3 rounded border border-zinc-800">
+        <button onclick="adminAddMurasim()" class="w-full bg-green-800 py-3 rounded font-bold text-white">ثبت مجلس جدید</button>
+        
+        <div class="mt-8 border-t border-zinc-700 pt-4">
+            <h3 class="text-gold-text">دفترچه اعضای سامانه:</h3>
+            <div id="admin-members-list" class="mt-2 space-y-2 text-xs"></div>
+        </div>
+
+        <button onclick="logout()" class="mt-4 w-full bg-zinc-800 py-2 rounded text-xs text-zinc-500">خروج از مدیریت</button>
     </div>
 
-    <nav class="fixed bottom-0 w-full bg-slate-900 border-t border-zinc-700 p-4 flex justify-around">
-        <button onclick="showPage('page-list')">لیست مجالس</button>
-        <button onclick="showPage('page-login')">مدیریت</button>
+    <div id="panel-user" class="page p-6 space-y-4">
+        <h2 class="text-xl gold-text font-bold">پروفایل کاربری</h2>
+        <input type="text" id="user-name" placeholder="نام و نام خانوادگی" class="w-full bg-slate-900 p-3 rounded border border-zinc-800">
+        <input type="text" id="user-city" placeholder="شهر" class="w-full bg-slate-900 p-3 rounded border border-zinc-800">
+        <button onclick="saveProfile()" class="w-full bg-gold text-black py-3 rounded font-bold">ذخیره اطلاعات</button>
+        <button onclick="logout()" class="w-full bg-red-900 py-2 rounded text-xs text-red-300">خروج از حساب</button>
+    </div>
+
+    <div id="page-payment" class="page p-6 text-center space-y-4">
+        <button onclick="showPage('page-list')" class="text-xs text-zinc-500">← بازگشت به لیست مجالس</button>
+        <h2 id="pay-name" class="text-2xl gold-text font-bold"></h2>
+        <div class="mosque-frame p-8 rounded-lg">
+            <p class="text-sm opacity-70">شماره کارت جهت اهدای سرباره:</p>
+            <p id="pay-card" class="text-3xl font-bold tracking-widest my-6 text-gold-text"></p>
+            <input type="text" id="payer-name" placeholder="نام خیر (اختیاری)" class="w-full bg-black p-3 mb-4 text-center rounded border border-zinc-800">
+            <button onclick="processPayment()" class="w-full bg-gold text-black py-3 rounded font-bold">ثبت واریزی و دریافت کد پیگیری</button>
+            
+            <div id="tracking-box" class="hidden mt-6 p-4 bg-slate-800 rounded-lg border border-green-700 text-center space-y-1">
+                <p class="text-xs text-green-300">کد پیگیری شما (ثبت شد):</p>
+                <p id="tracking-code" class="text-2xl font-mono text-green-400 font-bold"></p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 w-full bg-slate-900 border-t border-zinc-700 p-4 flex justify-around shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
+        <button onclick="showPage('page-list')" class="flex flex-col items-center text-xs text-zinc-400 hover:text-gold-text"><i class="fa-solid fa-book-quran text-lg mb-1"></i>لیست مجالس</button>
+        <button onclick="showPage('page-login')" class="flex flex-col items-center text-xs text-zinc-400 hover:text-gold-text"><i class="fa-solid fa-user text-lg mb-1"></i>حساب کاربری</button>
     </nav>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
+        // نمایش صفحات
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
+
+        // منطق ورود (ادمین یا کاربر)
         function handleLogin() {
-            if(document.getElementById('phone').value === "09964677831") showPage('panel-admin');
-            else alert("دسترسی غیرمجاز");
+            let phone = document.getElementById('phone').value;
+            if (phone === "09964677831") {
+                showPage('panel-admin');
+                updateAdminStats(); // لود آمار ادمین
+                updateMembersList(); // لود لیست اعضا
+            } else if (phone.length >= 10) {
+                showPage('panel-user');
+                loadProfile(); // لود پروفایل کاربر
+            } else {
+                alert("شماره موبایل معتبر نیست.");
+            }
         }
+
+        // ذخیره پروفایل کاربر
+        function saveProfile() {
+            let phone = document.getElementById('phone').value;
+            let name = document.getElementById('user-name').value;
+            let city = document.getElementById('user-city').value;
+            localStorage.setItem('profile_' + phone, JSON.stringify({ name, city }));
+            
+            // اضافه کردن به دفترچه اعضای ادمین
+            let members = JSON.parse(localStorage.getItem('members') || "[]");
+            if (!members.includes(phone)) {
+                members.push(phone);
+                localStorage.setItem('members', JSON.stringify(members));
+            }
+            alert("اطلاعات شما با موفقیت ثبت شد.");
+        }
+
+        // لود پروفایل کاربر
+        function loadProfile() {
+            let phone = document.getElementById('phone').value;
+            let saved = localStorage.getItem('profile_' + phone);
+            if (saved) {
+                let p = JSON.parse(saved);
+                document.getElementById('user-name').value = p.name;
+                document.getElementById('user-city').value = p.city;
+            }
+        }
+
+        // (فقط ادمین) ثبت مجلس جدید
         function adminAddMurasim() {
-            let db = JSON.parse(localStorage.getItem('db') || "[]");
-            db.push({ name: document.getElementById('m-name').value, card: document.getElementById('m-card').value });
-            localStorage.setItem('db', JSON.stringify(db));
+            let name = document.getElementById('m-name').value;
+            let card = document.getElementById('m-card').value;
+            if (name && card) {
+                let db = JSON.parse(localStorage.getItem('db') || "[]");
+                db.push({ name, card });
+                localStorage.setItem('db', JSON.stringify(db));
+                alert("مجلس با موفقیت ثبت شد.");
+                location.reload();
+            }
+        }
+
+        // (برای کاربر عادی) باز کردن صفحه پرداخت
+        function openPayment(name, card) {
+            document.getElementById('pay-name').innerText = 'مجلس یادبود مرحوم ' + name;
+            document.getElementById('pay-card').innerText = card;
+            showPage('page-payment');
+        }
+
+        // (برای کاربر عادی) ثبت واریزی و تولید کد پیگیری
+        function processPayment() {
+            let name = document.getElementById('payer-name').value || "خیر ناشناس";
+            let murasimName = document.getElementById('pay-name').innerText.replace('مجلس یادبود مرحوم ', '');
+            let trackCode = Math.floor(100000000000 + Math.random() * 900000000000); // کد ۱۲ رقمی
+
+            // ذخیره در تراکنش‌های ادمین
+            let txs = JSON.parse(localStorage.getItem('transactions') || "[]");
+            txs.push({ name, murasimName, trackCode, date: new Date().toLocaleDateString('fa-IR') });
+            localStorage.setItem('transactions', JSON.stringify(txs));
+            
+            document.getElementById('tracking-code').innerText = trackCode;
+            document.getElementById('tracking-box').classList.remove('hidden');
+            updateAdminStats(); // بروزرسانی آمار ادمین
+        }
+
+        // (برای ادمین) بروزرسانی آمار و لیست تراکنش‌ها
+        function updateAdminStats() {
+            let txs = JSON.parse(localStorage.getItem('transactions') || "[]");
+            document.getElementById('total-users').innerText = txs.length;
+        }
+
+        // (برای ادمین) بروزرسانی دفترچه اعضا
+        function updateMembersList() {
+            let members = JSON.parse(localStorage.getItem('members') || "[]");
+            let listEl = document.getElementById('admin-members-list');
+            listEl.innerHTML = members.map(phone => {
+                let profile = JSON.parse(localStorage.getItem('profile_' + phone) || "{}");
+                return `
+                    <div class="bg-slate-800 p-2 rounded flex justify-between border border-zinc-700">
+                        <span>${profile.name || 'نامشخص'}</span>
+                        <span class="text-zinc-500">${phone}</span>
+                        <span>${profile.city || '-'}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // خروج از پنل
+        function logout() {
             location.reload();
         }
-        function processPayment() {
-            let code = Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('tracking-code').innerText = code;
-            document.getElementById('tracking-box').classList.remove('hidden');
-        }
+
+        // لود اولیه لیست مراسم‌ها
         let db = JSON.parse(localStorage.getItem('db') || "[]");
-        document.getElementById('murasim-list').innerHTML = db.map((m, i) => `
-            <div onclick
-            <audio id="quran-player" loop>
-    <source src="https://www.islamic-audios.com/quran/001.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-    // انتخاب المان‌ها
-    const player = document.getElementById('quran-player');
-
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        
-        // اگر صفحه پرداخت باز شد، صدا را پخش کن
-        if (id === 'page-payment') {
-            player.play().catch(e => console.log("کاربر هنوز تعاملی نداشته است"));
+        let listEl = document.getElementById('murasim-list');
+        if (db.length === 0) {
+            listEl.innerHTML = '<p class="text-center p-10 opacity-60">هنوز مجلسی ثبت نشده است.</p>';
         } else {
-            // در غیر این صورت متوقف کن (اختیاری)
+            listEl.innerHTML = db.map(m => `
+                <div onclick="openPayment('${m.name}', '${m.card}')" 
+                class="mosque-frame p-6 text-center cursor-pointer hover:bg-slate-800 transition rounded-lg">
+                    <h3 class="text-2xl font-bold gold-text">${m.name}</h3>
+                    <p class="text-sm opacity-70 mt-1">جهت عرض تسلیت و پرداخت سرباره کلیک کنید</p>
+                </div>
+            `).join('');
         }
-    }
 
-    // کنترل دستی صدا توسط کاربر
-    function toggleAudio() {
-        if (player.paused) {
-            player.play();
-        } else {
-            player.pause();
-        }
-    }
+    </script>
+</body>
+</html>
 
-    // بقیه توابع قبلی
-    function handleLogin() {
-        if(document.getElementById('phone').value === "09964677831") showPage('panel-admin');
-        else alert("دسترسی غیرمجاز");
-    }
-
-    function adminAddMurasim() {
-        let db = JSON.parse(localStorage.getItem('db') || "[]");
-        db.push({ name: document.getElementById('m-name').value, card: document.getElementById('m-card').value });
-        localStorage.setItem('db', JSON.stringify(db));
-        location.reload();
-    }
-
-    function processPayment() {
-        let code = Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('tracking-code').innerText = code;
-        document.getElementById('tracking-box').classList.remove('hidden');
-    }
-</script>
-<button onclick="toggleAudio()" class="fixed top-4 left-4 bg-slate-800 p-2 rounded-full text-xs">
-    🔊 قطع/وصل صدا
-</button>
-<div id="panel-user" class="page p-6 space-y-4">
-    <h2 class="text-xl gold-text">پروفایل کاربری</h2>
-    <input type="text" id="user-name" placeholder="نام و نام خانوادگی" class="w-full bg-slate-900 p-3 rounded">
-    <input type="text" id="user-city" placeholder="شهر" class="w-full bg-slate-900 p-3 rounded">
-    <button onclick="saveProfile()" class="w-full bg-gold text-black py-3 rounded font-bold">ذخیره اطلاعات</button>
-    <button onclick="logout()" class="w-full bg-red-900 py-2 rounded text-xs">خروج</button>
-</div>
-// ذخیره پروفایل
-function saveProfile() {
-    let phone = document.getElementById('phone').value; // شماره‌ای که موقع لاگین وارد کرده
-    let name = document.getElementById('user-name').value;
-    let city = document.getElementById('user-city').value;
-    
-    let profile = { name, city };
-    localStorage.setItem('profile_' + phone, JSON.stringify(profile));
-    alert("اطلاعات ذخیره شد.");
-}
-
-// لود پروفایل هنگام ورود به پنل
-function loadProfile() {
-    let phone = document.getElementById('phone').value;
-    let savedProfile = localStorage.getItem('profile_' + phone);
-    if(savedProfile) {
-        let p = JSON.parse(savedProfile);
-        document.getElementById('user-name').value = p.name;
-        document.getElementById('user-city').value = p.city;
-    }
-}
-function handleLogin() {
-    let phone = document.getElementById('phone').value;
-    if(phone === "09964677831") {
-        showPage('panel-admin');
-    } else if(phone.length >= 10) {
-        showPage('panel-user');
-        loadProfile(); // اینجا اطلاعات کاربر قبلی لود می‌شود
-    } else {
-        alert("شماره صحیح نیست");
-    }
-}
-function saveProfile() {
-    let phone = document.getElementById('phone').value;
-    let name = document.getElementById('user-name').value;
-    let city = document.getElementById('user-city').value;
-    
-    // ۱. ذخیره اطلاعات شخصی
-    localStorage.setItem('profile_' + phone, JSON.stringify({ name, city }));
-    
-    // ۲. اضافه کردن شماره به لیست اعضا (اگر قبلاً ثبت نشده)
-    let members = JSON.parse(localStorage.getItem('members') || "[]");
-    if (!members.includes(phone)) {
-        members.push(phone);
-        localStorage.setItem('members', JSON.stringify(members));
-    }
-    
-    alert("اطلاعات شما با موفقیت در سامانه ثبت شد.");
-}
-<div class="mt-8 border-t border-zinc-700 pt-4">
-    <h3 class="text-gold-text">دفترچه اعضای سامانه:</h3>
-    <div id="admin-members-list" class="mt-2 space-y-2 text-xs"></div>
-</div>
-function updateMembersList() {
-    let members = JSON.parse(localStorage.getItem('members') || "[]");
-    let listEl = document.getElementById('admin-members-list');
-    
-    listEl.innerHTML = members.map(phone => {
-        let profile = JSON.parse(localStorage.getItem('profile_' + phone) || "{}");
-        return `
-            <div class="bg-slate-800 p-2 rounded flex justify-between">
-                <span>${profile.name || 'نامشخص'}</span>
-                <span class="text-zinc-500">${phone}</span>
-                <span>${profile.city || '-'}</span>
-            </div>
-        `;
-    }).join('');
-}
